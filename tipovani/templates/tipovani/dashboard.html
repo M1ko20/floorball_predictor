@@ -1,0 +1,94 @@
+{% extends 'tipovani/base.html' %}
+
+{% block title %}Můj účet{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>Vítejte, {{ user.username }}! 👋</h2>
+        <p class="lead">Celkový počet bodů: <strong>{{ profile.points }}</strong></p>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Pořadí týmů -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>📊 Pořadí týmů</h5>
+            </div>
+            <div class="card-body">
+                {% if team_ranking and team_ranking.is_submitted %}
+                    <p class="text-success">✅ Odevzdáno {{ team_ranking.submitted_at|date:"d.m.Y H:i" }}</p>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            {% for item in ranking_items %}
+                            <tr>
+                                <td>{{ item.position }}.</td>
+                                <td>{{ item.team.name }}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-warning">⚠️ Ještě jste neodevzdali pořadí týmů</p>
+                    <a href="{% url 'poradi_tymu' %}" class="btn btn-primary">Vyplnit pořadí</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Moje tipy -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>⚽ Moje tipy na zápasy</h5>
+            </div>
+            <div class="card-body">
+                {% if tips %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Zápas</th>
+                                    <th>Tip</th>
+                                    <th>Výsledek</th>
+                                    <th>Body</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for tip in tips %}
+                                <tr>
+                                    <td>
+                                        <small>{{ tip.match.opponent }}</small><br>
+                                        <small class="text-muted">{{ tip.match.datetime|date:"d.m H:i" }}</small>
+                                    </td>
+                                    <td>{{ tip.home_score_tip }}:{{ tip.away_score_tip }}</td>
+                                    <td>
+                                        {% if tip.match.is_finished %}
+                                            {{ tip.match.home_score }}:{{ tip.match.away_score }}
+                                        {% else %}
+                                            <small class="text-muted">Nehrán</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if tip.match.is_finished %}
+                                            <span class="badge bg-success">{{ tip.points_earned }}</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">-</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">Zatím nemáte žádné tipy</p>
+                    <a href="{% url 'zapasy' %}" class="btn btn-primary">Tipovat zápasy</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

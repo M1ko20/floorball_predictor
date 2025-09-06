@@ -1,0 +1,59 @@
+{% extends 'tipovani/base.html' %}
+
+{% block title %}Leaderboard{% endblock %}
+
+{% block content %}
+<h2>🏆 Leaderboard - Celkové pořadí</h2>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Pozice</th>
+                        <th>Hráč</th>
+                        <th>Body</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for profile in profiles %}
+                    <tr {% if profile.user == user %}class="table-warning"{% endif %}>
+                        <td>
+                            <strong>{{ forloop.counter }}.</strong>
+                            {% if forloop.counter == 1 %}🥇{% elif forloop.counter == 2 %}🥈{% elif forloop.counter == 3 %}🥉{% endif %}
+                        </td>
+                        <td>
+                            {{ profile.user.username }}
+                            {% if profile.user == user %}<small class="text-muted">(to jste vy)</small>{% endif %}
+                            {% if profile.user.is_staff %}<span class="badge bg-danger">Admin</span>{% endif %}
+                        </td>
+                        <td><span class="badge bg-primary">{{ profile.points }}</span></td>
+                        <td>
+                            {% if profile.user.teamranking.is_submitted %}
+                                <span class="badge bg-success">Pořadí odevzdáno</span>
+                            {% else %}
+                                <span class="badge bg-warning">Pořadí neodevzdáno</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">Zatím nejsou žádní hráči</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <h4>ℹ️ Jak získat body?</h4>
+    <ul>
+        <li><strong>Tipy na zápasy:</strong> 2 body za správného vítěze, 2 body za přesný počet gólů domácích, 2 body za přesný počet gólů hostí (max 8 bodů za perfektní tip)</li>
+        <li><strong>Pořadí týmů:</strong> 3 body za každý správně umístěný tým</li>
+    </ul>
+</div>
+{% endblock %}

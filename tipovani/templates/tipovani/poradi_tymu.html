@@ -1,0 +1,75 @@
+{% extends 'tipovani/base.html' %}
+
+{% block title %}Pořadí týmů{% endblock %}
+
+{% block content %}
+<h2>📊 Pořadí týmů v lize</h2>
+
+{% if submitted %}
+    <div class="alert alert-success">
+        <h5>✅ Vaše pořadí bylo úspěšně odevzdáno!</h5>
+        <p>Již ho nemůžete změnit. Body získáte až po vyhodnocení adminem.</p>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h5>Vaše předpověď pořadí</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Pozice</th>
+                            <th>Tým</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in ranking_items %}
+                        <tr>
+                            <td><strong>{{ item.position }}.</strong></td>
+                            <td>{{ item.team.name }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="alert alert-warning">
+        <h5>⚠️ Upozornění</h5>
+        <p>Po odevzdání pořadí už ho nebudete moci změnit! Za každý správně umístěný tým získáte 3 body.</p>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-header">
+                <h5>Seřaďte týmy podle předpokládaného konečného pořadí (1 = nejlepší)</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for field in form %}
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div style="width: 60px;">
+                                {{ field }}
+                            </div>
+                            <label class="ms-3 mb-0">{{ field.label }}</label>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <hr>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-success btn-lg" onclick="return confirm('Opravdu chcete odevzdat pořadí? Po odevzdání už ho nebudete moci změnit!')">
+                        ✅ Odevzdat pořadí týmů
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endif %}
+{% endblock %}

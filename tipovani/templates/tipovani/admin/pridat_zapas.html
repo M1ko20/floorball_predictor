@@ -1,0 +1,49 @@
+{% extends 'tipovani/base.html' %}
+
+{% block title %}Přidat zápas{% endblock %}
+
+{% block content %}
+<h2>➕ Přidat nový zápas</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.opponent.id_for_label }}" class="form-label">Soupeř</label>
+                        {{ form.opponent }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.datetime.id_for_label }}" class="form-label">Datum a čas</label>
+                        {{ form.datetime }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.location.id_for_label }}" class="form-label">Místo konání</label>
+                        {{ form.location }}
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">Přidat zápas</button>
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Zrušit</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h6>ℹ️ Informace</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>Domácí tým:</strong> FBC ČPP Bystroň Group OSTRAVA</p>
+                <p><strong>Uzamčení tipů:</strong> 1 hodina před zápasem</p>
+                <p>Po přidání budou moci uživatelé tipovat výsledek zápasu.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

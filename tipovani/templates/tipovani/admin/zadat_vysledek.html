@@ -1,0 +1,72 @@
+{% extends 'tipovani/base.html' %}
+
+{% block title %}Zadat výsledek{% endblock %}
+
+{% block content %}
+<h2>⚽ Zadat výsledek zápasu</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5>{{ match.home_team }} vs {{ match.opponent }}</h5>
+                <small class="text-muted">{{ match.datetime|date:"d.m.Y H:i" }} - {{ match.location }}</small>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="{{ form.home_score.id_for_label }}" class="form-label">
+                                {{ match.home_team }} (domácí)
+                            </label>
+                            {{ form.home_score }}
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <label class="form-label">&nbsp;</label>
+                            <div class="form-control-plaintext text-center">:</div>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="{{ form.away_score.id_for_label }}" class="form-label">
+                                {{ match.opponent }} (hosté)
+                            </label>
+                            {{ form.away_score }}
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            {% if match.is_finished %}Upravit výsledek{% else %}Zadat výsledek{% endif %}
+                        </button>
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Zrušit</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h6>ℹ️ Co se stane po zadání?</h6>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li>Zápas bude označen jako dokončený</li>
+                    <li>Automaticky se přepočítají body všech hráčů</li>
+                    <li>Hráči uvidí své získané body za tento zápas</li>
+                </ul>
+                
+                <hr>
+                <h6>Bodování:</h6>
+                <ul class="small">
+                    <li>2 body za správného vítěze</li>
+                    <li>2 body za přesný počet gólů domácích</li>
+                    <li>2 body za přesný počet gólů hostí</li>
+                    <li>2 extra body za perfektní tip</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

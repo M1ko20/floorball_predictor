@@ -1,0 +1,79 @@
+<!-- zapasy.html -->
+{% extends 'tipovani/base.html' %}
+{% block title %}Zápasy{% endblock %}
+
+{% block content %}
+<h2>⚽ Zápasy FBC Ostrava</h2>
+<div class="row">
+    {% for match in matches %}
+    <div class="col-md-6 mb-3">
+        <div class="card {% if match.is_locked %}locked{% endif %}">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">{{ match.home_team }} vs {{ match.opponent }}</h6>
+                {% if match.is_finished %}
+                <span class="badge bg-success">Dokončen</span>
+                {% elif match.is_locked %}
+                <span class="badge bg-warning">Uzamčen</span>
+                {% else %}
+                <span class="badge bg-primary">Aktivní</span>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    <strong>📅 Datum:</strong> {{ match.datetime|date:"d.m.Y H:i" }}<br>
+                    <strong>📍 Místo:</strong> {{ match.location }}
+                </p>
+                
+                {% if match.is_finished %}
+                <div class="alert alert-info">
+                    <strong>Výsledek:</strong> {{ match.home_score }}:{{ match.away_score }}
+                </div>
+                {% endif %}
+                
+                {% if match.user_tip %}
+                <div class="alert alert-success">
+                    <strong>Váš tip:</strong> {{ match.user_tip.home_score_tip }}:{{ match.user_tip.away_score_tip }}
+                    {% if match.is_finished %}
+                    <br><strong>Získané body:</strong> {{ match.user_tip.points_earned }}
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                {% if not match.is_locked and not match.is_finished %}
+                <form method="post" class="mt-3">
+                    {% csrf_token %}
+                    <input type="hidden" name="match_id" value="{{ match.id }}">
+                    <div class="row align-items-end">
+                        <div class="col-4">
+                            <label class="form-label">{{ match.home_team }}</label>
+                            {{ tip_form.home_score_tip }}
+                        </div>
+                        <div class="col-1 text-center">
+                            <span>:</span>
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label">{{ match.opponent }}</label>
+                            {{ tip_form.away_score_tip }}
+                        </div>
+                        <div class="col-3">
+                            <button type="submit" class="btn btn-primary btn-sm w-100">
+                                {% if match.user_tip %}Změnit{% else %}Tipovat{% endif %}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                {% elif match.is_locked and not match.is_finished %}
+                <p class="text-muted">⏰ Tip je uzamčen (1 hodina před zápasem)</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            Zatím nejsou naplánované žádné zápasy.
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

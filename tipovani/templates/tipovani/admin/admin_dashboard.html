@@ -1,0 +1,102 @@
+{% extends 'tipovani/base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h2>🔧 Admin Dashboard</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Rychlé akce</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <a href="{% url 'pridat_zapas' %}" class="btn btn-primary w-100 mb-2">
+                            ➕ Přidat nový zápas
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'vyhodnotit_poradi' %}" class="btn btn-success w-100 mb-2">
+                            📊 Vyhodnotit pořadí týmů
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'leaderboard' %}" class="btn btn-info w-100 mb-2">
+                            🏆 Zobrazit leaderboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Posledních 10 zápasů</h5>
+            </div>
+            <div class="card-body">
+                {% if matches %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Zápas</th>
+                                    <th>Datum</th>
+                                    <th>Místo</th>
+                                    <th>Výsledek</th>
+                                    <th>Status</th>
+                                    <th>Akce</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for match in matches %}
+                                <tr>
+                                    <td>{{ match.home_team }} vs {{ match.opponent }}</td>
+                                    <td>{{ match.datetime|date:"d.m.Y H:i" }}</td>
+                                    <td>{{ match.location }}</td>
+                                    <td>
+                                        {% if match.is_finished %}
+                                            {{ match.home_score }}:{{ match.away_score }}
+                                        {% else %}
+                                            <span class="text-muted">Nehrán</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if match.is_finished %}
+                                            <span class="badge bg-success">Dokončen</span>
+                                        {% elif match.is_locked %}
+                                            <span class="badge bg-warning">Uzamčen</span>
+                                        {% else %}
+                                            <span class="badge bg-primary">Aktivní</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if not match.is_finished %}
+                                            <a href="{% url 'zadat_vysledek' match.id %}" class="btn btn-sm btn-success">
+                                                Zadat výsledek
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'zadat_vysledek' match.id %}" class="btn btn-sm btn-secondary">
+                                                Upravit výsledek
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">Zatím nejsou žádné zápasy</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

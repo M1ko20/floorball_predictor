@@ -1,0 +1,43 @@
+{% extends 'tipovani/base.html' %}
+
+{% block title %}Vyhodnotit pořadí{% endblock %}
+
+{% block content %}
+<h2>📊 Vyhodnotit pořadí týmů</h2>
+
+<div class="alert alert-warning">
+    <h5>⚠️ Pozor!</h5>
+    <p>Po zadání správného pořadí se automaticky přidělí body všem uživatelům, kteří odevzdali své pořadí. 
+    Za každý správně umístěný tým získá uživatel 3 body.</p>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="card">
+        <div class="card-header">
+            <h5>Zadejte správné konečné pořadí týmů v lize</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for field in form %}
+                <div class="col-md-6 mb-3">
+                    <div class="d-flex align-items-center">
+                        <div style="width: 60px;">
+                            {{ field }}
+                        </div>
+                        <label class="ms-3 mb-0">{{ field.label }}</label>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <hr>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-success btn-lg" onclick="return confirm('Opravdu chcete vyhodnotit pořadí? Tato akce se nedá vrátit zpět a přidělí body všem uživatelům!')">
+                    ✅ Vyhodnotit pořadí a přidělit body
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

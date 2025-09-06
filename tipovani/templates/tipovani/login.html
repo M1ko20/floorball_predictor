@@ -1,0 +1,31 @@
+{% extends 'tipovani/base.html' %}
+
+{% block title %}Přihlášení{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">🏒 Přihlášení do tipovací aplikace</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        {{ form.username.label_tag }}
+                        {{ form.username }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.password.label_tag }}
+                        {{ form.password }}
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Přihlásit se</button>
+                </form>
+                
+                <hr>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
