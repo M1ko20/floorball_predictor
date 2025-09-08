@@ -1,4 +1,3 @@
-<!-- zapasy.html -->
 {% extends 'tipovani/base.html' %}
 {% block title %}Zápasy{% endblock %}
 
@@ -21,24 +20,22 @@
             <div class="card-body">
                 <p class="card-text">
                     <strong>📅 Datum:</strong> {{ match.datetime|date:"d.m.Y H:i" }}<br>
-                    <strong>📍 Místo:</strong> {{ match.location }}
+                    <strong>📍 Místo:</strong> {{ match.location }}<br>
+                    <strong>❓ Otázka k zápasu: </strong> {{ match.question }}
                 </p>
-                
-                {% if match.is_finished %}
-                <div class="alert alert-info">
-                    <strong>Výsledek:</strong> {{ match.home_score }}:{{ match.away_score }}
-                </div>
-                {% endif %}
-                
+
                 {% if match.user_tip %}
                 <div class="alert alert-success">
                     <strong>Váš tip:</strong> {{ match.user_tip.home_score_tip }}:{{ match.user_tip.away_score_tip }}
+                    {% if match.user_tip.question_answer is not None %}
+                        <br><strong>Odpověď na otázku:</strong> {{ match.user_tip.question_answer|yesno:"Ano,Ne" }}
+                    {% endif %}
                     {% if match.is_finished %}
-                    <br><strong>Získané body:</strong> {{ match.user_tip.points_earned }}
+                        <br><strong>Získané body:</strong> {{ match.user_tip.points_earned }}
                     {% endif %}
                 </div>
                 {% endif %}
-                
+
                 {% if match.is_locked %}
                 <div class="mt-2">
                     <a href="{% url 'tipovani_k_zapasu' match.id %}" class="btn btn-outline-secondary btn-sm w-100">
@@ -52,6 +49,7 @@
                     {% csrf_token %}
                     <input type="hidden" name="match_id" value="{{ match.id }}">
                     <div class="row align-items-end">
+                        <!-- Skóre -->
                         <div class="col-4">
                             <label class="form-label">{{ match.home_team }}</label>
                             {{ tip_form.home_score_tip }}
@@ -63,7 +61,12 @@
                             <label class="form-label">{{ match.opponent }}</label>
                             {{ tip_form.away_score_tip }}
                         </div>
+                        <!-- Odpověď na otázku -->
                         <div class="col-3">
+                            <label class="form-label">Odpověď na otázku</label>
+                            {{ tip_form.question_answer }}
+                        </div>
+                        <div class="col-12 mt-2">
                             <button type="submit" class="btn btn-primary btn-sm w-100">
                                 {% if match.user_tip %}Změnit{% else %}Tipovat{% endif %}
                             </button>

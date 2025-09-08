@@ -47,8 +47,8 @@ class Match(models.Model):
     away_score = models.IntegerField(null=True, blank=True)
     is_finished = models.BooleanField(default=False)
     
-    question = models.CharField(max_length=200, blank=False)
-    correct_answer = models.BooleanField(default=False)
+    question = models.CharField(max_length=255)
+    correct_answer = models.BooleanField(null=True, blank=True)  # bude vyplněno až po zápase
     
     def is_locked(self):
         return timezone.now() >= (self.datetime - timedelta(hours=1))
@@ -63,8 +63,10 @@ class MatchTip(models.Model):
     away_score_tip = models.IntegerField()
     points_earned = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+    question_point = models.IntegerField(default=0)
+    question_answer = models.BooleanField(null=True)  # co tipnul hráč
     
-    question_answer = models.BooleanField()
+
     
     class Meta:
         unique_together = ['user', 'match']
@@ -100,8 +102,11 @@ class MatchTip(models.Model):
             self.away_score_tip == self.match.away_score):
             points += 2  # Celkem 8 bodů (2+2+2+2)
         
-        if self.question_answer == self.match.correct_answer:
+        if self.question_answer is not None and self.question_answer == self.match.correct_answer:
             points += 1
+            self.question_point = 1
+        else:
+            self.question_point = 0
         
         return points
     

@@ -23,12 +23,18 @@
                         <label for="{{ form.location.id_for_label }}" class="form-label">Místo konání</label>
                         {{ form.location }}
                     </div>
+                    <div class="mb-3">
+                        <label for="{{ form.question.id_for_label }}" class="form-label">Otázka k zápasu</label>
+                        {{ form.question }}
+                    </div>
+                    
                     
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-success">Přidat zápas</button>
                         <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Zrušit</a>
                     </div>
                 </form>
+                
             </div>
         </div>
     </div>

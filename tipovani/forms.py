@@ -20,23 +20,14 @@ class CustomLoginForm(AuthenticationForm):
 class MatchTipForm(forms.ModelForm):
     class Meta:
         model = MatchTip
-        fields = ['home_score_tip', 'away_score_tip']
+        fields = ['home_score_tip', 'away_score_tip', 'question_answer']
         widgets = {
-            'home_score_tip': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'min': '0',
-                'style': 'width: 80px; display: inline-block;'
-            }),
-            'away_score_tip': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'min': '0',
-                'style': 'width: 80px; display: inline-block;'
-            })
+            'home_score_tip': forms.NumberInput(attrs={'class': 'form-control', 'style': 'width: 80px; display: inline-block;'}),
+            'away_score_tip': forms.NumberInput(attrs={'class': 'form-control', 'style': 'width: 80px; display: inline-block;'}),
+            'question_answer': forms.Select(choices=[(True, 'Ano'), (False, 'Ne')], attrs={'class': 'form-control', 'style': 'width: 120px; display: inline-block;'})
         }
-        labels = {
-            'home_score_tip': 'Domácí',
-            'away_score_tip': 'Hosté'
-        }
+
+
 
 class TeamRankingForm(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -57,28 +48,23 @@ class TeamRankingForm(forms.Form):
 class MatchForm(forms.ModelForm):
     class Meta:
         model = Match
-        fields = ['opponent', 'datetime', 'location', 'question', 'correct_answer']
+        fields = ['opponent', 'datetime', 'location', 'question']
         widgets = {
             'opponent': forms.TextInput(attrs={'class': 'form-control'}),
             'datetime': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
             'location': forms.TextInput(attrs={'class': 'form-control'}),
             'question': forms.TextInput(attrs={'class': 'form-control'}),
-            'correct_answer': forms.Select(choices=[(True, 'Ano'), (False, 'Ne')], attrs={'class': 'form-control'})
         }
+
 
 class MatchResultForm(forms.ModelForm):
     class Meta:
         model = Match
-        fields = ['home_score', 'away_score']
+        fields = ['home_score', 'away_score', 'correct_answer']
         widgets = {
-            'home_score': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'min': '0'
-            }),
-            'away_score': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'min': '0'
-            })
+            'home_score': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
+            'away_score': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
+            'correct_answer': forms.Select(choices=[(True, 'Ano'), (False, 'Ne')], attrs={'class': 'form-control'}),
         }
 
 class TeamCorrectRankingForm(forms.Form):

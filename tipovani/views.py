@@ -89,6 +89,8 @@ def zapasy(request):
             if not created:
                 tip.home_score_tip = form.cleaned_data['home_score_tip']
                 tip.away_score_tip = form.cleaned_data['away_score_tip']
+                tip.question_answer = form.cleaned_data['question_answer']  # 🟢 DŮLEŽITÝ ŘÁDEK!
+
                 tip.save()
             
             messages.success(request, 'Tip byl uložen!')

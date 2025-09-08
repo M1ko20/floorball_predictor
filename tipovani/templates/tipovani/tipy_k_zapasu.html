@@ -1,37 +1,51 @@
 {% extends 'tipovani/base.html' %}
 {% block content %}
-<div class="container mt-4">
-    <h2 class="mb-3">Tipy pro zápas: {{ match.home_team }} vs {{ match.opponent }}</h2>
+<h2>Tipy ostatních na zápas</h2>
 
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th scope="col">Uživatel</th>
-                    <th scope="col">Tip</th>
-                    <th scope="col">Body</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for tip in tips %}
-                    <tr {% if tip.user == request.user %}class="table-info"{% endif %}>
-                        <td>{{ tip.user.username }}</td>
-                        <td>{{ tip.home_score_tip }} : {{ tip.away_score_tip }}</td>
-                        <td>
-                            {% if tip.points_earned > 0 %}
-                                <strong>{{ tip.points_earned }}</strong>
-                            {% else %}
-                                0
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="3" class="text-center">Nikdo zatím netipoval</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<div class="card mt-3 mb-4">
+  <div class="card-body">
+    <h5>{{ match.home_team }} vs {{ match.opponent }}</h5>
+    <p><strong>Datum:</strong> {{ match.datetime|date:"d.m.Y H:i" }} |
+       <strong>Místo:</strong> {{ match.location }}</p>
+    {% if match.is_finished %}
+      <p><strong>Výsledek:</strong> {{ match.home_score }} : {{ match.away_score }}</p>
+      <p><strong>Otázka:</strong> {{ match.question }}</p>
+    {% endif %}
+  </div>
 </div>
+
+<table class="table table-bordered table-hover">
+  <thead class="table-light">
+    <tr>
+      <th>👤 Uživatel</th>
+      <th>🎯 Tip</th>
+      <th>❓ Odpověď na otázku</th>
+      <th>⭐ Body za zápas</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for tip in tips %}
+      <tr>
+        <td>{{ tip.user.username }}</td>
+        <td>{{ tip.home_score_tip }} : {{ tip.away_score_tip }}</td>
+        <td>
+          {% if tip.question_answer is not None %}
+            {% if tip.question_answer %}
+              <span style="color: green; font-weight: bold;">Ano</span>
+            {% else %}
+              <span style="color: red; font-weight: bold;">Ne</span>
+            {% endif %}
+          {% else %}
+            <span class="text-muted">nevyplněno</span>
+          {% endif %}
+        </td>
+        <td><strong>{{ tip.points_earned }}</strong></td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="4" class="text-center">Zatím nikdo netipoval tento zápas.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}
