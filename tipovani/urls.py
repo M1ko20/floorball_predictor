@@ -11,6 +11,11 @@ urlpatterns = [
     path('zapasy/', views.zapasy, name='zapasy'),
     path('poradi-tymu/', views.poradi_tymu, name='poradi_tymu'),
     path('leaderboard/', views.leaderboard, name='leaderboard'),
+    #path('zobrazit-zapasy/', views.zamcene_zapasy, name='zamcene_zapasy'),
+    path('zobrazit-zapas/<int:match_id>/', views.tipovani_k_zapasu, name='tipovani_k_zapasu'),
+    path('ostatni-poradi/', views.ostatni_poradi, name='ostatni_poradi'),
+
+
     
     # Admin URLs
     path('admin-panel/', views.admin_dashboard, name='admin_dashboard'),

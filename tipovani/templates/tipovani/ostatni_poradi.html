@@ -1,0 +1,30 @@
+{% extends 'tipovani/base.html' %}
+{% block content %}
+<h2>Odevzdaná pořadí ostatních</h2>
+
+<div class="rankings-container" style="display: flex; flex-wrap: wrap; gap: 20px;">
+
+    {% for username, items in all_items.items %}
+        <div class="ranking-card" style="border: 1px solid #ccc; border-radius: 10px; padding: 15px; width: 250px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <h4 style="text-align: center; margin-bottom: 10px;">{{ username }}</h4>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background-color: #f2f2f2;">
+                        <th style="padding: 5px; text-align: left;">Pozice</th>
+                        <th style="padding: 5px; text-align: left;">Tým</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td style="padding: 5px;">{{ item.position }}</td>
+                            <td style="padding: 5px;">{{ item.team.name }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
+
+</div>
+{% endblock %}

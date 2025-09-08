@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.db import transaction
 from django.http import JsonResponse
+from datetime import timedelta
 from .models import UserProfile, Match, MatchTip, Team, TeamRanking, TeamRankingItem
 from .forms import (CustomLoginForm, MatchTipForm, TeamRankingForm, 
                    MatchForm, MatchResultForm, TeamCorrectRankingForm)
@@ -229,6 +230,47 @@ def zadat_vysledek(request, match_id):
         'form': form,
         'match': match
     })
+
+@login_required
+def zamcene_zapasy(request):
+    matches = Match.objects.filter(datetime__lte=timezone.now() + timedelta(hours=1)).order_by('-datetime')
+    return render(request, 'tipovani/zamcene_zapasy.html', {'matches': matches})
+
+@login_required
+def tipovani_k_zapasu(request, match_id):
+    match = get_object_or_404(Match, id=match_id)
+
+    if not match.is_locked():
+        messages.error(request, 'Zápas ještě není uzamčen.')
+        return redirect('zamcene_zapasy')
+
+    tips = MatchTip.objects.filter(match=match).select_related('user')
+
+    return render(request, 'tipovani/tipy_k_zapasu.html', {
+        'match': match,
+        'tips': tips
+    })
+
+@login_required
+def ostatni_poradi(request):
+    try:
+        my_ranking = TeamRanking.objects.get(user=request.user)
+    except TeamRanking.DoesNotExist:
+        messages.error(request, 'Nejdříve musíš odevzdat své pořadí.')
+        return redirect('poradi_tymu')
+
+    if not my_ranking.is_submitted:
+        messages.error(request, 'Nejdříve musíš odevzdat své pořadí.')
+        return redirect('poradi_tymu')
+
+    all_rankings = TeamRanking.objects.filter(is_submitted=True).select_related('user')
+    all_items = {
+        ranking.user.username: list(TeamRankingItem.objects.filter(ranking=ranking).select_related('team').order_by('position'))
+        for ranking in all_rankings
+    }
+
+    return render(request, 'tipovani/ostatni_poradi.html', {'all_items': all_items})
+
 
 @login_required
 def vyhodnotit_poradi(request):

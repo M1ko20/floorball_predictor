@@ -57,14 +57,13 @@ class TeamRankingForm(forms.Form):
 class MatchForm(forms.ModelForm):
     class Meta:
         model = Match
-        fields = ['opponent', 'datetime', 'location']
+        fields = ['opponent', 'datetime', 'location', 'question', 'correct_answer']
         widgets = {
             'opponent': forms.TextInput(attrs={'class': 'form-control'}),
-            'datetime': forms.DateTimeInput(attrs={
-                'class': 'form-control',
-                'type': 'datetime-local'
-            }),
-            'location': forms.TextInput(attrs={'class': 'form-control'})
+            'datetime': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+            'location': forms.TextInput(attrs={'class': 'form-control'}),
+            'question': forms.TextInput(attrs={'class': 'form-control'}),
+            'correct_answer': forms.Select(choices=[(True, 'Ano'), (False, 'Ne')], attrs={'class': 'form-control'})
         }
 
 class MatchResultForm(forms.ModelForm):
